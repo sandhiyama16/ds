@@ -1,0 +1,20 @@
+def find_s_algorithm(training_data):
+    hypothesis = ['0'] * len(training_data[0])  
+    for example in training_data:
+        if example[-1] == 'yes':
+            for i in range(len(hypothesis)):
+                if hypothesis[i] == '0':
+                    hypothesis[i] = example[i]
+                elif hypothesis[i] != example[i]:
+                    hypothesis[i] = '?'
+    
+    return hypothesis
+training_data = [
+    ('sunny', 'warm', 'normal', 'strong', 'warm', 'same', 'yes'),
+    ('sunny', 'warm', 'high', 'strong', 'warm', 'same', 'yes'),
+    ('rainy', 'cold', 'high', 'strong', 'warm', 'change', 'no'),
+    ('sunny', 'warm', 'high', 'strong', 'cool', 'change', 'yes')
+]
+
+specific_hypothesis = find_s_algorithm(training_data)
+print("The most specific hypothesis is:", specific_hypothesis)
