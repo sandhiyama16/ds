@@ -1,0 +1,37 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn import metrics
+
+# Sample dataset
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+y = np.array([0, 1, 1, 0])
+
+# Split dataset into training set and test set
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=0)
+
+# Create logistic regression object
+logreg = LogisticRegression()
+
+# Train the model using the training sets
+logreg.fit(X_train, y_train)
+
+# Predict the response for test dataset
+y_pred = logreg.predict(X_test)
+
+# Model Accuracy, how often is the classifier correct?
+print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+
+# Print the coefficients
+print("Coefficients: \n", logreg.coef_)
+
+# Print the intercept
+print("Intercept: \n", logreg.intercept_)
+
+# Plot the data
+plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test)
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.title("Logistic Regression")
+plt.show()
