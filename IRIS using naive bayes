@@ -1,0 +1,38 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.datasets import load_iris
+
+# Load the Iris dataset
+iris_data = load_iris()
+
+# Preprocess the data
+X = iris_data.data
+y = iris_data.target
+
+# Convert target to class names
+class_names = iris_data.target_names
+y_class_names = [class_names[i] for i in y]
+
+# Create a DataFrame
+iris_df = pd.DataFrame(data=X, columns=iris_data.feature_names)
+iris_df['class'] = y_class_names
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y_class_names, test_size=0.2, random_state=0)
+
+# Create a Naive Bayes classifier
+model = GaussianNB()
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
