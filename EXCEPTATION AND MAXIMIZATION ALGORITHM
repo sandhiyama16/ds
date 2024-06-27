@@ -1,0 +1,40 @@
+                                                                                                                        import numpy as np
+from scipy.stats import multivariate_normal
+
+# Define the number of clusters (K) and the number of data points (N)
+K = 2
+N = 100
+
+# Generate random data points from two Gaussian distributions
+np.random.seed(0)
+mu1, sigma1 = [1, 1], [[1, 0.5], [0.5, 1]]
+mu2, sigma2 = [5, 5], [[1, 0.5], [0.5, 1]]
+data = np.vstack((multivariate_normal.rvs(mu1, sigma1, size=N//2),
+                  multivariate_normal.rvs(mu2, sigma2, size=N//2)))
+
+# Initialize the parameters randomly
+pi = np.random.rand(K)
+mu = np.random.rand(K, 2)
+sigma = np.array([[[1, 0.5], [0.5, 1]] for _ in range(K)])
+
+# EM algorithm
+for _ in range(10):  # Run for 10 iterations
+    # E-step: Calculate the responsibilities
+    responsibilities = np.zeros((N, K))
+    for k in range(K):
+        responsibilities[:, k] = pi[k] * multivariate_normal.pdf(data, mu[k], sigma[k])
+    responsibilities /= responsibilities.sum(axis=1)[:, np.newaxis]
+
+    # M-step: Update the parameters
+    N_k = responsibilities.sum(axis=0)
+    pi = N_k / N
+    mu = (responsibilities.T @ data) / N_k[:, np.newaxis]
+    sigma = np.zeros((K, 2, 2))
+    for k in range(K):
+        diff = data - mu[k]
+        sigma[k] = (responsibilities[:, k, np.newaxis, np.newaxis] * diff[:, :, np.newaxis] * diff[:, np.newaxis, :]).sum(axis=0) / N_k[k]
+
+print("Final parameters:")
+print("pi:", pi)
+print("mu:", mu)
+print("sigma:", sigma)
